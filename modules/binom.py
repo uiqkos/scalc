@@ -1,1 +1,1 @@
-from modules.syntax import syntax
+from modules.syntax.syntax import *
