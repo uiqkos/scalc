@@ -13,11 +13,16 @@ from modules.syntax.syntax import *
 
 def remove_duplicates(items):
     flags = []
-    for i in range(0, len(items)):
+    i = 0
+    while i < len(items):
+        # print(flags)
         if items[i].value in flags:
             del items[i]
             continue
-        flags.append(items[i].value)
+        else:
+            flags.append(items[i].value)
+            i += 1
+        # print(flags)
 
 def parse(pool):
     # TODO save special_parameters
@@ -26,7 +31,6 @@ def parse(pool):
 
     for item in pool.args:
         ranks[item.value] = pool.count(item.value)
-
     remove_duplicates(pool.args)
 
     for item in pool.args:

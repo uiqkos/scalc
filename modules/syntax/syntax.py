@@ -40,3 +40,8 @@ class Pool:
         for item in self.args:
             result += (item.value is value)
         return result
+
+# support
+#
+# def size(self):
+#     return len(self)
