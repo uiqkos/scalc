@@ -31,6 +31,11 @@ class Pool:
         self.type = type
         self.operator = operator
 
+    def __eq__(self, other):
+        if isinstance(other, Pool):
+            return other.source_value == self.source_value
+        return False
+
     def get_values(self):
         return [value for value in self.value]
 

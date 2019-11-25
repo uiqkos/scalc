@@ -1,5 +1,6 @@
 from modules import pow
 from modules.syntax.syntax import *
+from modules.syntax.reduce import *
 #
 # main = \
 #     Pool([
@@ -22,30 +23,33 @@ from modules.syntax.syntax import *
 # )
 #
 #
-# main = \
-#     Pool('', [
-#         Pool('(a*a)*(a*a)*(a*a)', [
-#             Pool('a*a', [
-#                 Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
-#             ], Pool.Type.expression, Operator.operatorType.mul),
-#             Pool('a*a', [
-#                 Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
-#             ], Pool.Type.expression, Operator.operatorType.mul),
-#             Pool('a*a', [
-#                 Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
-#             ], Pool.Type.expression, Operator.operatorType.mul)
-#         ], Pool.Type.expression, Operator.operatorType.mul),
-#
-#         Pool('a+b', [
-#             Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('b', 'b', Pool.Type.non_const, Operator.operatorType.fin)
-#         ], Pool.Type.expression, Operator.operatorType.plus)
-#     ], Pool.Type.expression, Operator.operatorType.div
-# )
-#
-#
-# pow.parse(main.value[0])
-# pow.parse(main.value[0].value[0])
-# print(main.value[0].value[0].rank, main.value[0].value[0].value[0].rank, len(main.value[0].value))
+
+main = \
+    Pool('', [
+        Pool('(a*a)*(a*a)*(a*a)', [
+            Pool('a*a', [
+                Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
+            ], Pool.Type.expression, Operator.operatorType.mul),
+            Pool('a*a', [
+                Pool('a**2', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
+            ], Pool.Type.expression, Operator.operatorType.mul),
+            Pool('a*a', [
+                Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
+            ], Pool.Type.expression, Operator.operatorType.mul)
+        ], Pool.Type.expression, Operator.operatorType.mul),
+
+        Pool('a+b', [
+            Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('b', 'b', Pool.Type.non_const, Operator.operatorType.fin)
+        ], Pool.Type.expression, Operator.operatorType.plus)
+    ], Pool.Type.expression, Operator.operatorType.div
+)
+
+
+
+
+pow.parse(main.value[0])
+pow.parse(main.value[0].value[0])
+print(main.value[0].value[0].rank, main.value[0].value[0].value[0].rank, len(main.value[0].value))
 
 # def some():
 #     pass
@@ -73,29 +77,30 @@ from modules.syntax.syntax import *
 # a.func = func
 # # a.func(3, 4)
 # a.func(3, 4)
-
-class A:
-    def __init__(self, number):
-        self.number = number
-
-    def __eq__(self, other):
-        if isinstance(other, A):
-            return other.number == self.number
-        return False
-
-    def __hash__(self):
-        return hash(self.number)
-
-    def __le__(self, other):
-        if isinstance(other, A):
-            return other.number <= self.number
-        return False
-
-
-a = A(77)
-b = A(6)
-c = A(7)
-set_1 = set([a, b, c])
-set_2 = set([b, c])
-set_1 - set_2
-print(set_1 - set_2)
+#
+# class A:
+#     def __init__(self, number):
+#         self.number = number
+#
+#     def __getattr__(self, item):
+#         if isinstance(item, A):
+#             return self.__dict__[item]
+#
+#     def __eq__(self, other):
+#         if isinstance(other, A):
+#             return other.number == self.number
+#         return False
+#
+#     def __hash__(self):
+#         return hash(self.number)
+#
+#     def __le__(self, other):
+#         if isinstance(other, A):
+#             return other.number <= self.number
+#         return False
+#
+# a = Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
+# b = Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
+# b.rank, a.rank = 2, 3
+# pow.lower_rank(a, b)
+# print(a.rank, b.rank)

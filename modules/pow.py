@@ -1,4 +1,5 @@
 from modules.syntax.syntax import *
+from modules.syntax.reduce import *
 # #
 # # class rank:
 # #     def __init__(self, rank):
@@ -24,22 +25,15 @@ def remove_duplicates(items):
         # print(flags)
 
 def lower_rank(item1, item2):
-    if item1.rank < item2.rank:
-        item2.rank -= item1
-        item1.rank = 0
-    else:
-        item1.rank -= item2.rank
-        item2.rank = 0
+    diff = item1.rank - item2.rank
+    ge = lambda x : x if x >= 0 else 0
+    item1.rank, item2.rank = ge(diff), ge(-diff)
 
 
 def parse(pool):
     # TODO save special_parameters
     # print(pool.args)
-    ranks = dict()
-
-    for item in pool.value:
-        ranks[item.source_value] = pool.count(item.source_value)
-    remove_duplicates(pool.value)
-
+    ranks = reduce(pool.value, get_value=lambda pool : pool.source_value)
+    print(ranks, pool.value[:])
     for item in pool.value:
         item.rank = ranks[item.source_value]
