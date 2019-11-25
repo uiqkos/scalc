@@ -16,22 +16,30 @@ def remove_duplicates(items):
     i = 0
     while i < len(items):
         # print(flags)
-        if items[i].value in flags:
+        if items[i].source_value in flags:
             del items[i]
-            continue
         else:
-            flags.append(items[i].value)
+            flags.append(items[i].source_value)
             i += 1
         # print(flags)
+
+def lower_rank(item1, item2):
+    if item1.rank < item2.rank:
+        item2.rank -= item1
+        item1.rank = 0
+    else:
+        item1.rank -= item2.rank
+        item2.rank = 0
+
 
 def parse(pool):
     # TODO save special_parameters
     # print(pool.args)
     ranks = dict()
 
-    for item in pool.args:
-        ranks[item.value] = pool.count(item.value)
-    remove_duplicates(pool.args)
+    for item in pool.value:
+        ranks[item.source_value] = pool.count(item.source_value)
+    remove_duplicates(pool.value)
 
-    for item in pool.args:
-        item.special_parameters['rank'] = ranks[item.value]
+    for item in pool.value:
+        item.rank = ranks[item.source_value]
