@@ -20,6 +20,11 @@ class Operator:
         self.type = self.operator_dict[source_op]
 
 class Pool:
+    class Property:
+        def __init__(self, value, merge):
+            self.value = value
+            self.merge = merge
+
     class Type(Enum):
         expression = -1
         const = 1
@@ -30,7 +35,7 @@ class Pool:
         self.value = value
         self.type = type
         self.operator = operator
-        self.managers = []
+        self.properties = dict()
 
     def __hash__(self):
         return hash((self.source_value))
@@ -39,6 +44,9 @@ class Pool:
         if isinstance(other, Pool):
             return other.source_value == self.source_value
         return False
+
+    def add_property(self, name, value, merge):
+        self.properties[name] = Pool.Property(value, merge)
 
     def values(self):
         return [item.source_value for item in self.value]
