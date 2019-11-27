@@ -23,6 +23,8 @@ from modules.syntax.reduce import *
 # )
 #
 #
+#
+
 
 main = \
     Pool('', [
@@ -31,11 +33,11 @@ main = \
                 Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
             ], Pool.Type.expression, Operator.operatorType.mul),
             Pool('a*a', [
-                Pool('a**2', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
+                Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
             ], Pool.Type.expression, Operator.operatorType.mul),
             Pool('a*a', [
                 Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin), Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
-            ], Pool.Type.expression, Operator.operatorType.mul)
+            ], Pool.Type.expression, Operator.operatorType.mul),
         ], Pool.Type.expression, Operator.operatorType.mul),
 
         Pool('a+b', [
@@ -45,11 +47,17 @@ main = \
 )
 
 
+main.value[0].value[0].rank = 1
+main.value[0].value[1].rank = 1
+main.value[0].value[2].rank = 1
+main.value[0].rank = 1
 
-
-pow.parse(main.value[0])
 pow.parse(main.value[0].value[0])
-print(main.value[0].value[0].rank, main.value[0].value[0].value[0].rank, len(main.value[0].value))
+pow.parse(main.value[0].value[1])
+pow.parse(main.value[0].value[2])
+reduce(main.value[0].value)
+pow.parse(main.value[0])
+print(main.value[0].value[0].rank, len(main.value[0].value))
 
 # def some():
 #     pass
@@ -79,28 +87,16 @@ print(main.value[0].value[0].rank, main.value[0].value[0].value[0].rank, len(mai
 # a.func(3, 4)
 #
 # class A:
+#     a = 4
+#     b = 9
+#     c = "aaff"
 #     def __init__(self, number):
 #         self.number = number
 #
-#     def __getattr__(self, item):
-#         if isinstance(item, A):
-#             return self.__dict__[item]
-#
-#     def __eq__(self, other):
-#         if isinstance(other, A):
-#             return other.number == self.number
-#         return False
-#
-#     def __hash__(self):
-#         return hash(self.number)
-#
-#     def __le__(self, other):
-#         if isinstance(other, A):
-#             return other.number <= self.number
-#         return False
-#
-# a = Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
-# b = Pool('a', 'a', Pool.Type.non_const, Operator.operatorType.fin)
-# b.rank, a.rank = 2, 3
-# pow.lower_rank(a, b)
-# print(a.rank, b.rank)
+#     @property
+#     def rank(self, other=None):
+#         if other is not None:
+#             self.number = 6666
+#         return 4
+# a = A(4)
+# print(A.__dict__)

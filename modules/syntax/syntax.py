@@ -30,20 +30,22 @@ class Pool:
         self.value = value
         self.type = type
         self.operator = operator
+        self.managers = []
+
+    def __hash__(self):
+        return hash((self.source_value))
 
     def __eq__(self, other):
         if isinstance(other, Pool):
             return other.source_value == self.source_value
         return False
 
-    def get_values(self):
-        return [value for value in self.value]
+    def values(self):
+        return [item.source_value for item in self.value]
 
-    def count(self, value):
-        result = 0
-        for item in self.value:
-            result += (item.source_value is value)
-        return result
+    def merge(self, other):
+        for manager in self.managers:
+            manager(self, other)
 
 # support
 #

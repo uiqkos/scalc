@@ -4,21 +4,23 @@ def delete(i, container):
     del container[i]
 
 def reduce(
-        items,
+        pools,
         get_value=lambda x : x,
         del_item=lambda i, container : delete(i, container)
 ):
     multiplicities = dict()
-    delete = []
 
-    for i, item in enumerate(items):
-        if get_value(item) in multiplicities.keys():
-            delete.append(i)
+    for index, pool in enumerate(pools):
+        if get_value(pool) in multiplicities.keys():
+            multiplicities[get_value(pool)][1].append(index)
             continue
-        multiplicities[get_value(item)] = Counter(getattr(item, 'source_value') for item in items)[get_value(item)]
+        multiplicities[get_value(pool)] = tuple([index, []])
+    for item in multiplicities.keys():
+        for index in multiplicities[item][1][::-1]:
+            pools[multiplicities[item][0]].merge(pools[index])
+            # print(index, pools[index].source_value)
+            delete(index, pools)
+            # print(len(pools))
 
-    print(delete)
 
-    for i in delete[::-1]: del_item(i, items)
-    print(multiplicities)
     return multiplicities
