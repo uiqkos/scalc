@@ -10,11 +10,14 @@ def reduce(
 ):
     multiplicities = dict()
 
-    for index, pool in enumerate(pools):
-        if get_value(pool) in multiplicities.keys():
-            multiplicities[get_value(pool)][1].append(index)
-            continue
-        multiplicities[get_value(pool)] = tuple([index, []])
+    for pool in enumerate(pools):
+        # if get_value(pool) in multiplicities.keys():
+        #     multiplicities[get_value(pool)][1].append(index)
+        #     continue
+        # multiplicities[get_value(pool)] = tuple([index, []])
+        for kpool in pools:
+            if kpool == pool:
+                pool.to_remove.append(kpool)
     for item in multiplicities.keys():
         for index in multiplicities[item][1][::-1]:
             pools[multiplicities[item][0]].merge(pools[index])
