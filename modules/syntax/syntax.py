@@ -1,78 +1,92 @@
 from enum import Enum
 
-class Operator:
-    class operatorType:
-        plus = '+'
-        minus = '-'
-        mul = '*'
-        div = '/'
-        fin = '_'
+class Abstract:
+    def __init__(self, value, initial_basic):
+        self.value = value
+        if initial_basic is None:
+            self.initial_basic = InitalBasic(rank=1, mul=1)
+        else:
+            self.initial_basic = initial_basic
 
-    operator_dict = {
-        '+' : operatorType.plus,
-        '-' : operatorType.minus,
-        '*' : operatorType.mul,
-        '/' : operatorType.div,
-        '_' : operatorType.fin
-    }
+    def get_values(self):
+        return self.value
 
-    def __init__(self, source_op):
-        self.type = self.operator_dict[source_op]
+    def get_initial(self):
+        return self.initial_basic
 
 class Pool:
-    class Property:
-        def __init__(self, value, merge, equ):
-            self.value = value
-            self.merge = merge
-            self.equ = equ
-
-    class Type(Enum):
-        expression = -1
-        const = 1
-        non_const = 0
-
-    def default_eq(self, other, base_operator):
-        if isinstance(other, Pool):
-            return self.value == other.value
-        return False
-
-    def default_merge(self, other):
-        return True
-
-    def __init__(self, source_value, value, type, operator, base_operator):
+    def __init__(
+            self,
+            source_value,
+            internal_values,
+            internal_operator,
+            self_operator,
+            initial_basic
+    ):
         self.source_value = source_value
-        self.value = value
-        self.type = type
-        self.operator = operator
-        self.base_operator = base_operator
-        self.properties = dict()
-        self.to_remove = list()
-        self.properties['main'] = Pool.Property('@main', self.default_merge, self.default_eq)
+        self.internal_values = internal_values
+        self.internal_operator = internal_operator
+        self.self_operator = self_operator
 
-    def __hash__(self):
-        return hash(self.source_value)
+        if initial_basic is None:
+            self.initial_basic = InitalBasic(rank=1, mul=1)
+        else:
+            self.initial_basic = initial_basic
 
-    def __eq__(self, other):
-        if isinstance(other, Pool):
-            for property in self.properties.values():
-                if not property.equ(self, other): return False
-            return True
-        return False
+    @classmethod
+    def from_pool(cls, other, initial_basic):
+        return cls(
+            other.source_value,
+            other.internal_values,
+            other.internal_operator,
+            other.self_operator,
+            initial_basic if initial_basic is not None else InitalBasic(rank=1, mul=1)
+        )
 
-    def clear(self):
-        for pool in self.to_remove:
-            del pool
+    def get_values(self):
+        return [internal_value.get_values() for internal_value in self.internal_values]
+        # for initial_value in self.initial_values:
+        #     if isinstance(initial_value, Variable):
+        #         return initial_value.name
+        #     if isinstance(initial_value, Number):
+        #         return initial_value.value
+        #     if isinstance(initial_value, Pool):
+        #         return initial_value.get_values()
+class InitalBasic:
+    def __init__(self, **kwargs):
+        for arg, value in kwargs.items():
+            self.__dict__[arg] = value
 
-    def values(self):
-        return [item.source_value for item in self.value]
+class Variable(Abstract):
+    pass
+    # def __init__(self, name):
+    #     self.name = name
+    #
+    # def get_values(self):
+    #     return self.name
+class Number(Abstract):
+    pass
+    # def __init__(self, value):
+    #     self.value = value
+    #
+    # def get_values(self):
+    #     return self.value
 
-    def merge(self, other):
-        for prop in self.properties.values():
-            prop.merge(self, other, self.base_operator)
-        del other
-    # def add_property(self, name, value, merge):
-    #     self.properties[name] = Pool.Property(value, merge)
-# support
-#
-# def size(self):
-#     return len(self)
+
+class OperatorType(Enum):
+    plus = '+'
+    minus = '-'
+    div = '/'
+    mul = '*'
+class Operator:
+    def __init__(self, operator):
+        self.operator = init(operator)
+
+def init(operator):
+    return {
+        '+': OperatorType.plus,
+        '-': OperatorType.minus,
+        '*': OperatorType.mul,
+        '/': OperatorType.div
+    }[operator]
+

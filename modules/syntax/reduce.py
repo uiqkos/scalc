@@ -1,29 +1,12 @@
 from modules.syntax.syntax import *
 from collections import Counter
-def delete(i, container):
-    del container[i]
 
-def reduce(
-        pools,
-        get_value=lambda x : x,
-        del_item=lambda i, container : delete(i, container)
-):
-    multiplicities = dict()
+def compone(pool: Pool):  # for +
+    internal_pool1 = pool.internal_values[0]
+    internal_pool2 = pool.internal_values[1]
 
-    for pool in enumerate(pools):
-        # if get_value(pool) in multiplicities.keys():
-        #     multiplicities[get_value(pool)][1].append(index)
-        #     continue
-        # multiplicities[get_value(pool)] = tuple([index, []])
-        for kpool in pools:
-            if kpool == pool:
-                pool.to_remove.append(kpool)
-    for item in multiplicities.keys():
-        for index in multiplicities[item][1][::-1]:
-            pools[multiplicities[item][0]].merge(pools[index])
-            # print(index, pools[index].source_value)
-            delete(index, pools)
-            # print(len(pools))
-
-
-    return multiplicities
+    if internal_pool1.initial_basic.rank == internal_pool2.initial_basic.rank and \
+       internal_pool1.get_values() == internal_pool2.get_values():
+        del pool.internal_values[0]
+        del pool.internal_values[1]
+        pool.internal_values.append(Pool(internal_pool1, ))
