@@ -1,7 +1,7 @@
 from enum import Enum
 
 class Abstract:
-    def __init__(self, value, initial_basic):
+    def __init__(self, value, initial_basic=None):
         self.value = value
         if initial_basic is None:
             self.initial_basic = InitalBasic(rank=1, mul=1)
@@ -32,15 +32,17 @@ class Pool:
             self.initial_basic = InitalBasic(rank=1, mul=1)
         else:
             self.initial_basic = initial_basic
+    # ! Constructors
 
     @classmethod
     def from_pool(cls, other, initial_basic):
+        print(initial_basic.mul)
         return cls(
             other.source_value,
             other.internal_values,
             other.internal_operator,
             other.self_operator,
-            initial_basic if initial_basic is not None else InitalBasic(rank=1, mul=1)
+            InitalBasic(rank=1, mul=1) if initial_basic is None else initial_basic
         )
 
     def get_values(self):
@@ -78,15 +80,24 @@ class OperatorType(Enum):
     minus = '-'
     div = '/'
     mul = '*'
+
 class Operator:
     def __init__(self, operator):
-        self.operator = init(operator)
+        self.operator, self.call_func = init(operator)
+
+    def __call__(self, *args, **kwargs):
+        return self.call_func(*args, **kwargs)
+
+    def __eq__(self, other):
+        if isinstance(other, OperatorType):
+            return self.operator == other
+        return self.operator == other.operator
 
 def init(operator):
     return {
-        '+': OperatorType.plus,
-        '-': OperatorType.minus,
-        '*': OperatorType.mul,
-        '/': OperatorType.div
+        '+': (OperatorType.plus,  lambda a, b: a + b),
+        '-': (OperatorType.minus, lambda a, b: a - b),
+        '*': (OperatorType.mul,   lambda a, b: a * b),
+        '/': (OperatorType.div,   lambda a, b: a / b)
     }[operator]
 

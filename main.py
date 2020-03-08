@@ -25,4 +25,9 @@ a = Pool(
     None
 )
 
-compone(a)
+# compone(a)
+
+
+
+# print(a.internal_values[0].initial_basic.mul)
+
